@@ -27,63 +27,43 @@ class AuthorizationForm extends Component {
         e.preventDefault();
         if(!this.state.emailClicked){
             const adress = this.state.email;
-            console.log(adress);
             const reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
             if(reg.test(adress) == false) {
                    alert('Введите корректный e-mail');
-                //    console.log(document.querySelector('.email'))
-
-                //    adress.classList.toggle('error')
                    return false;
                 }else{
-                    console.log("adress is ok")
-                
-            this.setState({emailClicked: true})
-            let url = "https://lumus.wistis.ru/api/v1/auth/check-email";
-        
-            const headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            };
-        
-            let body = {
-            "email": this.state.email,
-            };
-    
-            fetch(url, {
-                method: "POST",
-                headers,
-                body: JSON.stringify(body),
-            })
-            .then(response => response.json())
-            .then(data=>{
-                console.log(data);
-                this.setState({exists: data.exists})
-            })
-        }
-
+                this.setState({emailClicked: true})
+                let url = "https://lumus.wistis.ru/api/v1/auth/check-email";
+                const headers = {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                };
+                let body = {
+                "email": this.state.email,
+                };
+                fetch(url, {
+                    method: "POST",
+                    headers,
+                   body: JSON.stringify(body),
+                })
+                .then(response => response.json())
+                .then(data=>{
+                   this.setState({exists: data.exists})
+               })
+            }
         }
         else if (this.state.exists===0){
         let url = "https://lumus.wistis.ru/api/v1/auth/register";
-        
         const headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
         };
-        
         let body = {
             "name": this.state.name,
             "phone": this.state.phone,
-
-
-
             "email": this.state.email,
-
-
-
             "password": this.state.password
         };
-    
         fetch(url, {
             method: "POST",
             headers,
@@ -92,52 +72,38 @@ class AuthorizationForm extends Component {
         .then(response => {
             response.json()
         if (response.ok) { 
-
             this.setState({registered: true});
             this.setState({exists: 1})
-
               } else {
                 console.log(response)
-                alert("Ошибка: " + response.status + " Проверьте правильность заполнения полей Пароль должен состоять минимум из 8 символов");
+                alert("Ошибка: " + response.status + " Проверьте правильность заполнения полей Возможно, пользователь с таким адресом уже существует Пароль должен состоять минимум из 8 символов");
               }
         })
-        
         .catch((error) => {
             console.error('Error:', error);
             });
 
         }else if(this.state.exists===1){
-            console.log('exists!');
-
-
-
             const url = new URL(
                 "https://lumus.wistis.ru/api/v1/auth/login"
             );
-            
             const headers = {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
                 "Authorization": "Bearer 11|Z58sRgglIckxyFziYxJOjjFp0tRsejQUv2yQQ4Xu",
             };
-            
             let body = {
                 "email": this.state.email,
                 "password": this.state.password
             };
-            
             fetch(url, {
                 method: "POST",
                 headers,
                 body: JSON.stringify(body),
             })
             .then(response => response.json())
-            .then(data => console.log(data))
         }
     }
-      
-
-
 
     render(){
         return(
@@ -158,20 +124,14 @@ class AuthorizationForm extends Component {
             <hr></hr>
             </div>
             }
-            
-            
         <label>
           Email:
         </label>
           <input className="formContainer__input email" type="text" placeholder="Email" value={this.state.value} onChange={this.handleChange} />
-          
         {!this.state.emailClicked &&
         <>
             <input className="formContainer__button" type="submit" value="Продолжить" />
             <center id="or">Или</center>
-
-
-            
             <div className="formContainer__footer">
                 <img className="logo" src={google} alt="google" />
                 <img className="logo" src={apple} alt="apple" />
@@ -180,22 +140,16 @@ class AuthorizationForm extends Component {
             </div>
         </>
         }
-        
-
-
-
         {this.state.exists===0 &&
             <>
             <label>
               Пароль:
             </label>
             <input className="formContainer__input" type="password" placeholder="Пароль" value={this.state.value} onChange={this.handleChange} />
-
             <label>
               Имя Фамилия:
             </label>
             <input className="formContainer__input" type="text" placeholder="Имя Фамилия" value={this.state.value} onChange={this.handleChange} />
-
             <label>
               Телефон:
             </label>
@@ -205,7 +159,6 @@ class AuthorizationForm extends Component {
 
             <p>Нажимая на "Создать аккаунт", вы соглашаетесь с <span id="emphasize">Политикой обработки данных</span></p>
             </>
-          
           }
           {this.state.exists>0 &&
           <>
